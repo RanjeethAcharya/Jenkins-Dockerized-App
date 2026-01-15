@@ -30,11 +30,11 @@ pipeline {
                     // Stop and remove the existing container if running
                     if (isUnix()) {
                         sh 'docker rm -f todometer-container || true'
-                        sh 'docker run -d -p 8080:80 --name todometer-container todometer-app'
+                        sh 'docker run -d -p 8090:80 --name todometer-container todometer-app'
                     } else {
                         // On Windows, use 'bat' and handle error suppression differently if needed
                         bat 'docker rm -f todometer-container || exit 0'
-                        bat 'docker run -d -p 8080:80 --name todometer-container todometer-app'
+                        bat 'docker run -d -p 8090:80 --name todometer-container todometer-app'
                     }
                 }
             }
