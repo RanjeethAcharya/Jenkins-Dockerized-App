@@ -19,13 +19,16 @@ WORKDIR /app
 # Copy package files first for caching
 COPY package*.json ./
 
-# Install dependencies (including Electron for build scripts)
+# Install dependencies (ignoring scripts initially to avoid missing file errors)
 # We set ELECTRON_RUN_AS_NODE to ensure postinstall scripts don't try to spawn GUI
 ENV ELECTRON_RUN_AS_NODE=1
-RUN npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Copy source code
 COPY . .
+
+# Run postinstall scripts now that source code is available
+RUN npm run postinstall
 
 # Run tests
 # CI=true ensures vitest runs once and exits
