@@ -9,7 +9,7 @@ COPY package*.json ./
 # Install dependencies (including Electron for build scripts)
 # We set ELECTRON_RUN_AS_NODE to ensure postinstall scripts don't try to spawn GUI
 ENV ELECTRON_RUN_AS_NODE=1
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
