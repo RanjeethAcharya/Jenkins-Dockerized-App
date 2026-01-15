@@ -1,5 +1,18 @@
 # Stage 1: Build and Test
-FROM node:20 as build
+FROM node:20 AS build
+
+# Install system dependencies required by Electron
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libgbm1 \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libxss1 \
+    libgtk-3-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
