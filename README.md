@@ -4,52 +4,40 @@ A simple, meter-based to-do list built with Electron and React.
 
 ![todometer](assets/screenshot.png)
 
-## Download
+## DevOps Implementation
 
-Nab the latest version from the [Releases](https://github.com/cassidoo/todometer/releases) page!
+This repository highlights the **DevOps transformation** of the todometer application, focusing on containerization, automation, and build optimization.
 
-## Development
+### Key Features
 
-- Clone the repo:
+- **Dockerized Application**: Fully containerized React/Electron application.
+- **Multi-Stage Build**: Optimized `Dockerfile` that uses `node:20` for building and `node:alpine` for the final runtime, reducing image size from **~2.5GB to <200MB**.
+- **Build Caching**: Implemented Docker BuildKit cache mounts (`--mount=type=cache`) to speed up dependency installation and Electron rebuilding.
+- **CI/CD Pipeline**: Automated Generic Webhook Trigger Jenkins pipeline for Build, Test, and Deployment.
 
-```bash
-$ git clone https://github.com/cassidoo/todometer.git
-```
+### Docker Build Process
 
-- Go to the project directory and install dependencies:
+The `Dockerfile` employs a multi-stage approach:
+1.  **Build Stage**: Installs system dependencies, caches npm modules, tests, and builds the static assets.
+2.  **Runtime Stage**: Uses a lightweight Alpine image to serve the application using `serve`, ensuring minimal footprint.
 
-```bash
-$ cd todometer && npm install
-```
-
-To show the Electron application window with your current build:
-
-```bash
-$ npm run dev
-```
-
-To build a production version:
+**Build & Run Locally:**
 
 ```bash
-$ npm install
-$ npm run postinstall
-$ npm run pre-electron-pack
-$ npm run electron-pack
+# Build the image
+docker build -t todometer-app .
+
+# Run the container (Mapped to port 8090)
+docker run -d -p 8090:80 --name todometer-container todometer-app
 ```
 
-## Contributing
+### Jenkins Pipeline
 
-So you want to contribute? Yay! Great! Fun!
-I love seeing new PRs for todometer. That being said, not every pull request will be merged. The general guidelines I'll follow are:
+The `Jenkinsfile` defines the CI/CD workflow:
+1.  **Checkout**: Pulls the latest code.
+2.  **Build & Test**: Builds the Docker image and runs unit tests (`vitest`) inside the build process.
+3.  **Deploy**: Auto-deploys the container to the host using a fixed port (`8090`).
 
-- Does it make developing todometer easier?
-- Does it help other platforms (Windows, Mac, Linux) work better?
-- Does it fix a bug?
-- Does it break anything?
-- Does it stick to the original goal of todometer (a _simple_, meter-based to-do list)
-- Does it reduce the build size?
-- Is it necessary?
-
-Regarding that last point, I don't expect all pull requests to be absolutely necessary. New features are good. That being said, if the new features make the app unnecessarily complex in some way without bringing value to the users, it won't be merged.
-
-Please don't be hurt if your PR isn't merged. You're lovely for working on it. If you are thinking about working on something, feel free to make an issue beforehand so that you can make sure it'll be worth your time!
+#### Prerequisites for Jenkins Agent:
+- Docker installed and running.
+- Unix or Windows agent (Pipeline supports both environments).
