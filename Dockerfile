@@ -20,15 +20,24 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (ignoring scripts initially to avoid missing file errors)
-# We set ELECTRON_RUN_AS_NODE to ensure postinstall scripts don't try to spawn GUI
+# Use BuildKit cache mount to speed up npm install
 ENV ELECTRON_RUN_AS_NODE=1
-RUN npm install --legacy-peer-deps --ignore-scripts
+RUN --mount=type=cache,target=/root/.npm \
+    npm install --legacy-peer-deps --ignore-scripts
 
 # Copy source code
 COPY . .
 
 # Run postinstall scripts now that source code is available
-RUN npm run postinstall
+# Rebuild electron to ensure the binary is downloaded (was skipped by --ignore-scripts)
+# Use cache for electron binaries to speed up build
+RUN --mount=type=cache,target=/root/.cache/electron \
+    --mount=type=cache,target=/root/.cache/electron-builder \
+    npm rebuild electron
+
+RUN --mount=type=cache,target=/root/.cache/electron \
+    --mount=type=cache,target=/root/.cache/electron-builder \
+    npm run postinstall
 
 # Run tests
 # CI=true ensures vitest runs once and exits
