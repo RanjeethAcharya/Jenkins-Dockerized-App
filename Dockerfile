@@ -47,10 +47,20 @@ RUN npm run test
 # Build the renderer (React) application
 RUN npm run build:renderer
 
+# Stage 2: Serve with light Node image
+# Use alpine to drastically reduce image size (removes build tools, electron binaries, etc.)
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install simple static server
+RUN npm install -g serve
+
+# Copy only the built artifacts from the build stage
+COPY --from=build /app/dist/renderer ./dist/renderer
+
 # Expose port 80
 EXPOSE 80
 
-# Serve the application using a static file server
-# This results in a larger image than using Nginx, but fulfills the request to run from the build image.
-RUN npm install -g serve
+# Serve the application
 CMD ["serve", "-s", "dist/renderer", "-l", "80"]
