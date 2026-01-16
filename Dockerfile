@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy package files first for caching
-COPY package*.json ./
+COPY ToDoMeter/package*.json ./
 
 # Install dependencies (ignoring scripts initially to avoid missing file errors)
 # Use BuildKit cache mount to speed up npm install
@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm install --legacy-peer-deps --ignore-scripts
 
 # Copy source code
-COPY . .
+COPY ToDoMeter/ .
 
 # Run postinstall scripts now that source code is available
 # Rebuild electron to ensure the binary is downloaded (was skipped by --ignore-scripts)
