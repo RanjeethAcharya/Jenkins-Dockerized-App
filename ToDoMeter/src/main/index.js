@@ -32,7 +32,7 @@ function createWindow() {
 		minWidth: 320,
 		height: 600,
 		fullscreenable: true,
-		backgroundColor: "white",
+		backgroundColor: "#403F4D",
 		icon: path.join(app.getAppPath(), "assets/png/128x128.png"),
 		webPreferences: {
 			preload: path.join(app.getAppPath(), "dist/preload/index.cjs"),
