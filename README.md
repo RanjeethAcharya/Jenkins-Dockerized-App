@@ -2,7 +2,7 @@
 
 A simple, meter-based to-do list built with Electron and React.
 
-![todometer](TOdoMeter/oassets/screenshot.png)
+![todometer](ToDoMeter/assets/screenshot.png)
 
 ## DevOps Implementation
 
